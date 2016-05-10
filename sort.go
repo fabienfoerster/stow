@@ -30,7 +30,7 @@ func (s serie) twoDigitSeason() string {
 }
 
 func (s serie) seriePath() string {
-	return fmt.Sprintf("%s/Season%s/%s", s.name, s.twoDigitSeason(), s.filename)
+	return fmt.Sprintf("%s/season%s/%s", s.name, s.twoDigitSeason(), s.filename)
 }
 
 func isExtOk(file string) bool {
@@ -49,7 +49,7 @@ func createNewSeriePath(filename string) string {
 		matches := r.FindStringSubmatch(filename)
 		if matches != nil {
 			s := serie{matches[0], matches[1], matches[2], matches[3], matches[4]}
-			return s.seriePath()
+			return strings.ToLower(s.seriePath())
 		}
 
 	}
@@ -76,7 +76,6 @@ func Sort(source string, dest string) {
 		if isExtOk(filename) {
 			oldPath := filepath.Join(source, filename)
 			newPath := createNewSeriePath(filename)
-			newPath = strings.ToLower(newPath)
 			newPath = filepath.Join(dest, newPath)
 			os.MkdirAll(filepath.Dir(newPath), 0777)
 			os.Rename(oldPath, newPath)

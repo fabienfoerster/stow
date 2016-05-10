@@ -14,10 +14,10 @@ var seriesTest = []struct {
 	filename string // input
 	expected string // path created to put the series in
 }{
-	{"fleche.4x02.IMMERSIF.mp4", "fleche/Season04/fleche.4x02.IMMERSIF.mp4"},
-	{"elementaire.302.IMMERSION.mp4", "elementaire/Season03/elementaire.302.IMMERSION.mp4"},
-	{"Foire.du.Trone.S01E01.IMMERSE.720p.mkv", "Foire.du.Trone/Season01/Foire.du.Trone.S01E01.IMMERSE.720p.mkv"},
-	{"Foire.du.Trone.S06E03.IMMERSIFASF.1080p/Foire.du.Trone.S06E03.IMMERSIFASF.1080p.avi", "Foire.du.Trone/Season06/Foire.du.Trone.S06E03.IMMERSIFASF.1080p.avi"},
+	{"fleche.4x02.IMMERSIF.mp4", "fleche/season04/fleche.4x02.immersif.mp4"},
+	{"elementaire.302.IMMERSION.mp4", "elementaire/season03/elementaire.302.immersion.mp4"},
+	{"Foire.du.Trone.S01E01.IMMERSE.720p.mkv", "foire.du.trone/season01/foire.du.trone.s01e01.immerse.720p.mkv"},
+	{"Foire.du.Trone.S06E03.IMMERSIFASF.1080p/Foire.du.Trone.S06E03.IMMERSIFASF.1080p.avi", "foire.du.trone/season06/foire.du.trone.s06e03.immersifasf.1080p.avi"},
 }
 
 func TestCreatingPath(t *testing.T) {
