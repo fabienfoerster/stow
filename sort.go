@@ -42,6 +42,7 @@ func isExtOk(file string) bool {
 }
 
 func createNewSeriePath(filename string) string {
+	filename = filepath.Base(filename)
 	for _, pattern := range patterns {
 		r, _ := regexp.Compile(pattern)
 		matches := r.FindStringSubmatch(filename)
@@ -77,6 +78,8 @@ func Sort(source string, dest string) {
 			newPath = filepath.Join(dest, newPath)
 			os.MkdirAll(filepath.Dir(newPath), 0777)
 			os.Rename(oldPath, newPath)
+		} else if file.IsDir() {
+			Sort(filepath.Join(source, filename), dest)
 		}
 	}
 }
