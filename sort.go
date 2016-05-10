@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
 )
 
 // all pattern should have 4 catch in it ( should make a better solution later)
@@ -75,6 +76,7 @@ func Sort(source string, dest string) {
 		if isExtOk(filename) {
 			oldPath := filepath.Join(source, filename)
 			newPath := createNewSeriePath(filename)
+			newPath = strings.ToLower(newPath)
 			newPath = filepath.Join(dest, newPath)
 			os.MkdirAll(filepath.Dir(newPath), 0777)
 			os.Rename(oldPath, newPath)
