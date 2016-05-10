@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -16,6 +17,7 @@ var seriesTest = []struct {
 	{"fleche.4x02.IMMERSIF.mp4", "fleche/Season04/fleche.4x02.IMMERSIF.mp4"},
 	{"elementaire.302.IMMERSION.mp4", "elementaire/Season03/elementaire.302.IMMERSION.mp4"},
 	{"Foire.du.Trone.S01E01.IMMERSE.720p.mkv", "Foire.du.Trone/Season01/Foire.du.Trone.S01E01.IMMERSE.720p.mkv"},
+	{"Foire.du.Trone.S06E03.IMMERSIFASF.1080p/Foire.du.Trone.S06E03.IMMERSIFASF.1080p.avi", "Foire.du.Trone/Season06/Foire.du.Trone.S06E03.IMMERSIFASF.1080p.avi"},
 }
 
 func TestCreatingPath(t *testing.T) {
@@ -34,6 +36,7 @@ func TestMovingSeries(t *testing.T) {
 	os.MkdirAll(sourcePath, 0777)
 	for _, serie := range seriesTest {
 		path := fmt.Sprintf("%s/%s", sourcePath, serie.filename)
+		os.MkdirAll(filepath.Dir(path), 0777) // needed for episode in sub folder
 		_, err := os.Create(path)
 		if err != nil {
 			t.Fatalf("Unable to create file : %s", path)
