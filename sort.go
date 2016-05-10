@@ -10,7 +10,7 @@ import (
 )
 
 // all pattern should have 4 catch in it ( should make a better solution later)
-var patterns = []string{"(.*?)[. -]S([0-9]{1,2})E([0-9]{1,2})(.*)", "(.*?)[.]([0-9])([0-9]{2})(.*)", "(.*?)[.]?([0-9]{1,2})x([0-9]{1,2})(.*)"}
+var patterns = []string{"(.*?)[. -][Ss]([0-9]{1,2})[Ee]([0-9]{1,2})(.*)", "(.*?)[.]([0-9]{1,2})([0-9]{2})(.*)", "(.*?)[.]?([0-9]{1,2})x([0-9]{1,2})(.*)"}
 var extensions = []string{".mp4", ".avi", ".mkv", ".srt"}
 
 type serie struct {
@@ -56,6 +56,12 @@ func createNewSeriePath(filename string) string {
 	return ""
 }
 
+func isSampleFile(filename string) bool {
+	pattern := "(?i).*sample.*"
+	matched, _ := regexp.MatchString(pattern, filename)
+	return matched
+}
+
 // Sort is a function that the source folder
 // and move them to the correct place in the dest folder
 func Sort(source string, dest string) {
@@ -73,6 +79,9 @@ func Sort(source string, dest string) {
 	}
 	for _, file := range files {
 		filename := file.Name()
+		if isSampleFile(filename) {
+			continue
+		}
 		if isExtOk(filename) {
 			oldPath := filepath.Join(source, filename)
 			newPath := createNewSeriePath(filename)

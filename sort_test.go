@@ -18,6 +18,9 @@ var seriesTest = []struct {
 	{"elementaire.302.IMMERSION.mp4", "elementaire/season03/elementaire.302.immersion.mp4"},
 	{"Foire.du.Trone.S01E01.IMMERSE.720p.mkv", "foire.du.trone/season01/foire.du.trone.s01e01.immerse.720p.mkv"},
 	{"Foire.du.Trone.S06E03.IMMERSIFASF.1080p/Foire.du.Trone.S06E03.IMMERSIFASF.1080p.avi", "foire.du.trone/season06/foire.du.trone.s06e03.immersifasf.1080p.avi"},
+	{"marcel.agents.of.p.a.i.n.s03e19.720p.hdtv.x264-killers.[vtv].mkv", "marcel.agents.of.p.a.i.n/season03/marcel.agents.of.p.a.i.n.s03e19.720p.hdtv.x264-killers.[vtv].mkv"},
+	{"normalnatural.1119.hdtv-lol[ettv].mkv", "normalnatural/season11/normalnatural.1119.hdtv-lol[ettv].mkv"},
+	{"normalnatural.119.hdtv-lol.720p.[ettv].mkv", "normalnatural/season01/normalnatural.119.hdtv-lol.720p.[ettv].mkv"},
 }
 
 func TestCreatingPath(t *testing.T) {
@@ -80,13 +83,23 @@ func TestSampleFile(t *testing.T) {
 	}
 	destPath := fmt.Sprintf("%s/%s", tmpDir, dest)
 	Sort(sourcePath, destPath) // the magic happen here
-	shouldExist := fmt.Sprintf("%s/%s", source, sampleFile)
+	shouldExist := fmt.Sprintf("%s/%s", sourcePath, sampleFile)
 	shouldNotExistAnymore := fmt.Sprintf("%s/%s", destPath, createNewSeriePath(sampleFile))
-	if _, err := os.Stat(shouldExist); os.IsNotExist(err) {
+	if _, err = os.Stat(shouldExist); os.IsNotExist(err) {
 		t.Errorf("%s should exist", shouldExist)
 	}
-	if _, err := os.Stat(shouldNotExistAnymore); err == nil {
+	if _, err = os.Stat(shouldNotExistAnymore); err == nil {
 		t.Errorf("%s shoud not exist anymore", shouldNotExistAnymore)
+	}
+
+	//teardown
+	err = os.RemoveAll(sourcePath)
+	if err != nil {
+		t.Errorf("could not remove : %s", sourcePath)
+	}
+	err = os.RemoveAll(destPath)
+	if err != nil {
+		t.Errorf("could not remove : %s", sourcePath)
 	}
 
 }
