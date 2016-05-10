@@ -57,4 +57,14 @@ func TestMovingSeries(t *testing.T) {
 			t.Errorf("%s shoud not exist anymore", shouldNotExistAnymore)
 		}
 	}
+
+	//teardown
+	err := os.RemoveAll(sourcePath)
+	if err != nil {
+		t.Errorf("could not remove : %s", sourcePath)
+	}
+	err = os.RemoveAll(destPath)
+	if err != nil {
+		t.Errorf("could not remove : %s", sourcePath)
+	}
 }
