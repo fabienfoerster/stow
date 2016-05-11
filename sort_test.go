@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"testing"
@@ -102,4 +103,40 @@ func TestSampleFile(t *testing.T) {
 		t.Errorf("could not remove : %s", sourcePath)
 	}
 
+}
+
+func isDirEmpty(name string) (bool, error) {
+	f, err := os.Open(name)
+	if err != nil {
+		return false, err
+	}
+	defer f.Close()
+
+	// read in ONLY one file
+	_, err = f.Readdir(1)
+
+	// and if the file is EOF... well, the dir is empty.
+	if err == io.EOF {
+		return true, nil
+	}
+	return false, err
+}
+
+func TestEmptyAfterCleaning(t *testing.T) {
+	tmpDir := os.TempDir()
+	sourcePath := fmt.Sprintf("%s/%s", tmpDir, source)
+	file := "Splinter Cell Blacklist Shower.mp4"
+	os.MkdirAll(sourcePath, 0777)
+	_, err := os.Create(filepath.Join(sourcePath, file))
+	if err != nil {
+		t.Fatalf("Unable to create file : %s", file)
+	}
+	Clean(sourcePath)
+	ok, err := isDirEmpty(sourcePath)
+	if err != nil {
+		t.Fatalf("Unable to determine if dir is empty : %s", err)
+	}
+	if !ok {
+		t.Errorf("After cleaning dir should be empty : %s", sourcePath)
+	}
 }

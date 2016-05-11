@@ -93,3 +93,15 @@ func Sort(source string, dest string) {
 		}
 	}
 }
+
+//Clean remove everything within a directory
+func Clean(dir string) {
+	err := os.RemoveAll(dir)
+	if err != nil {
+		log.Printf("Unable to remove files in : %s", dir)
+	}
+	err = os.MkdirAll(dir, 0777)
+	if err != nil {
+		log.Printf("Unable to recreate dir : %s", dir)
+	}
+}
