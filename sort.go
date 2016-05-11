@@ -53,7 +53,7 @@ func createNewSeriePath(filename string) string {
 		}
 
 	}
-	return ""
+	return filepath.Join("1#ATrier", filename)
 }
 
 func isSampleFile(filename string) bool {

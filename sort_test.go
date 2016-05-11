@@ -22,6 +22,7 @@ var seriesTest = []struct {
 	{"marcel.agents.of.p.a.i.n.s03e19.720p.hdtv.x264-killers.[vtv].mkv", "marcel.agents.of.p.a.i.n/season03/marcel.agents.of.p.a.i.n.s03e19.720p.hdtv.x264-killers.[vtv].mkv"},
 	{"normalnatural.1119.hdtv-lol[ettv].mkv", "normalnatural/season11/normalnatural.1119.hdtv-lol[ettv].mkv"},
 	{"normalnatural.119.hdtv-lol.720p.[ettv].mkv", "normalnatural/season01/normalnatural.119.hdtv-lol.720p.[ettv].mkv"},
+	{"Splinter Cell Blacklist Shower.mp4", "1#ATrier/Splinter Cell Blacklist Shower.mp4"},
 }
 
 func TestCreatingPath(t *testing.T) {
