@@ -1,6 +1,9 @@
 package main
 
-import "flag"
+import (
+	"flag"
+	"log"
+)
 
 func main() {
 	srcPtr := flag.String("src", ".", "the folder contaning series to sort")
@@ -8,6 +11,9 @@ func main() {
 
 	flag.Parse()
 	Sort(*srcPtr, *dstPtr)
-	Clean(*srcPtr)
+	err := Clean(*srcPtr)
+	if err != nil {
+		log.Printf("Unable to clean the dir %s : %s", *srcPtr, err)
+	}
 
 }
