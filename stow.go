@@ -8,5 +8,6 @@ func main() {
 
 	flag.Parse()
 	Sort(*srcPtr, *dstPtr)
+	Clean(*srcPtr)
 
 }
