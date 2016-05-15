@@ -8,8 +8,9 @@ import (
 	"testing"
 )
 
-var source = "1#AVoir"
-var dest = "Series"
+var tempDir = os.TempDir()
+var sourcePath = filepath.Join(tempDir, "1#AVoir")
+var destPath = filepath.Join(tempDir, "Series")
 
 var seriesTest = []struct {
 	filename string // input
@@ -34,76 +35,21 @@ func TestCreatingPath(t *testing.T) {
 	}
 }
 
-func TestMovingSeries(t *testing.T) {
-	// create fake episode for the tests
-	tmpDir := os.TempDir()
-	sourcePath := fmt.Sprintf("%s/%s", tmpDir, source)
-	os.MkdirAll(sourcePath, 0777)
-	for _, serie := range seriesTest {
-		path := fmt.Sprintf("%s/%s", sourcePath, serie.filename)
-		os.MkdirAll(filepath.Dir(path), 0777) // needed for episode in sub folder
-		_, err := os.Create(path)
-		if err != nil {
-			t.Fatalf("Unable to create file : %s", path)
-		}
-	}
-
-	// actual testing
-
-	destPath := fmt.Sprintf("%s/%s", tmpDir, dest)
-	Sort(sourcePath, destPath) // the magic happen here
-	for _, serie := range seriesTest {
-		shouldExist := fmt.Sprintf("%s/%s", destPath, serie.expected)
-		shouldNotExistAnymore := fmt.Sprintf("%s/%s", sourcePath, serie.filename)
-		if _, err := os.Stat(shouldExist); os.IsNotExist(err) {
-			t.Errorf("%s should exist", shouldExist)
-		}
-		if _, err := os.Stat(shouldNotExistAnymore); err == nil {
-			t.Errorf("%s shoud not exist anymore", shouldNotExistAnymore)
-		}
-	}
-
-	//teardown
-	err := os.RemoveAll(sourcePath)
+func createFile(path string) error {
+	err := os.MkdirAll(filepath.Dir(path), 0777)
 	if err != nil {
-		t.Errorf("could not remove : %s", sourcePath)
+		return err
 	}
-	err = os.RemoveAll(destPath)
+	_, err = os.Create(path)
 	if err != nil {
-		t.Errorf("could not remove : %s", sourcePath)
+		return err
 	}
+	return nil
 }
 
-func TestSampleFile(t *testing.T) {
-	tmpDir := os.TempDir()
-	sourcePath := fmt.Sprintf("%s/%s", tmpDir, source)
-	sampleFile := "2.broke.girls.417.hdtv-lol.sample.mp4"
-	os.MkdirAll(sourcePath, 0777)
-	_, err := os.Create(filepath.Join(sourcePath, sampleFile))
-	if err != nil {
-		t.Fatalf("Unable to create file : %s", sampleFile)
-	}
-	destPath := fmt.Sprintf("%s/%s", tmpDir, dest)
-	Sort(sourcePath, destPath) // the magic happen here
-	shouldExist := fmt.Sprintf("%s/%s", sourcePath, sampleFile)
-	shouldNotExistAnymore := fmt.Sprintf("%s/%s", destPath, createNewSeriePath(sampleFile))
-	if _, err = os.Stat(shouldExist); os.IsNotExist(err) {
-		t.Errorf("%s should exist", shouldExist)
-	}
-	if _, err = os.Stat(shouldNotExistAnymore); err == nil {
-		t.Errorf("%s shoud not exist anymore", shouldNotExistAnymore)
-	}
-
-	//teardown
-	err = os.RemoveAll(sourcePath)
-	if err != nil {
-		t.Errorf("could not remove : %s", sourcePath)
-	}
-	err = os.RemoveAll(destPath)
-	if err != nil {
-		t.Errorf("could not remove : %s", sourcePath)
-	}
-
+func destroy(path string) error {
+	err := os.RemoveAll(path)
+	return err
 }
 
 func isDirEmpty(name string) (bool, error) {
@@ -123,12 +69,74 @@ func isDirEmpty(name string) (bool, error) {
 	return false, err
 }
 
+func TestMovingSeries(t *testing.T) {
+	// create fake episode for the tests
+	for _, serie := range seriesTest {
+		path := fmt.Sprintf("%s/%s", sourcePath, serie.filename)
+		err := createFile(path)
+		if err != nil {
+			t.Fatalf("Unable to create file : %s", path)
+		}
+	}
+
+	// actual testing
+
+	Sort(sourcePath, destPath) // the magic happen here
+	for _, serie := range seriesTest {
+		shouldExist := filepath.Join(destPath, serie.expected)
+		shouldNotExistAnymore := filepath.Join(sourcePath, serie.filename)
+		if _, err := os.Stat(shouldExist); os.IsNotExist(err) {
+			t.Errorf("%s should exist", shouldExist)
+		}
+		if _, err := os.Stat(shouldNotExistAnymore); err == nil {
+			t.Errorf("%s shoud not exist anymore", shouldNotExistAnymore)
+		}
+	}
+
+	//teardown
+	err := destroy(sourcePath)
+	if err != nil {
+		t.Errorf("could not remove : %s", sourcePath)
+	}
+	err = destroy(destPath)
+	if err != nil {
+		t.Errorf("could not remove : %s", sourcePath)
+	}
+}
+
+func TestSampleFile(t *testing.T) {
+
+	sampleFile := "2.broke.girls.417.hdtv-lol.sample.mp4"
+	err := createFile(filepath.Join(sourcePath, sampleFile))
+	if err != nil {
+		t.Fatalf("Unable to create file : %s", sampleFile)
+	}
+
+	Sort(sourcePath, destPath) // the magic happen here
+	shouldExist := fmt.Sprintf("%s/%s", sourcePath, sampleFile)
+	shouldNotExistAnymore := fmt.Sprintf("%s/%s", destPath, createNewSeriePath(sampleFile))
+	if _, err = os.Stat(shouldExist); os.IsNotExist(err) {
+		t.Errorf("%s should exist", shouldExist)
+	}
+	if _, err = os.Stat(shouldNotExistAnymore); err == nil {
+		t.Errorf("%s shoud not exist anymore", shouldNotExistAnymore)
+	}
+
+	//teardown
+	err = destroy(sourcePath)
+	if err != nil {
+		t.Errorf("could not remove : %s", sourcePath)
+	}
+	err = destroy(destPath)
+	if err != nil {
+		t.Errorf("could not remove : %s", sourcePath)
+	}
+
+}
+
 func TestCleaning(t *testing.T) {
-	tmpDir := os.TempDir()
-	sourcePath := fmt.Sprintf("%s/%s", tmpDir, source)
 	file := "Splinter Cell Blacklist Shower.exe"
-	os.MkdirAll(sourcePath, 0777)
-	_, err := os.Create(filepath.Join(sourcePath, file))
+	err := createFile(filepath.Join(sourcePath, file))
 	if err != nil {
 		t.Fatalf("Unable to create file : %s", file)
 	}
@@ -138,6 +146,13 @@ func TestCleaning(t *testing.T) {
 		t.Fatalf("Unable to determine if dir is empty : %s", err)
 	}
 	if ok {
-		t.Errorf("After cleaning dir should not be empty : %s", sourcePath)
+		t.Errorf("After cleaning dir should jot be empty : %s", sourcePath)
 	}
+
+	//teardown
+	err = destroy(sourcePath)
+	if err != nil {
+		t.Errorf("could not remove : %s", sourcePath)
+	}
+
 }
