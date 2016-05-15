@@ -94,21 +94,23 @@ func Sort(source string, dest string) {
 	}
 }
 
-//Clean remove everything within a directory
-func Clean(dir string) error {
+//CleanSubDir is a function that remove all the sub directory within a directory and all its content
+func CleanSubDir(dir string) error {
 	d, err := os.Open(dir)
 	if err != nil {
 		return err
 	}
 	defer d.Close()
-	names, err := d.Readdirnames(-1)
+	files, err := d.Readdir(-1)
 	if err != nil {
 		return err
 	}
-	for _, name := range names {
-		err = os.RemoveAll(filepath.Join(dir, name))
-		if err != nil {
-			return err
+	for _, file := range files {
+		if file.IsDir() {
+			err = os.RemoveAll(filepath.Join(dir, file.Name()))
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil

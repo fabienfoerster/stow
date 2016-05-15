@@ -123,21 +123,21 @@ func isDirEmpty(name string) (bool, error) {
 	return false, err
 }
 
-func TestEmptyAfterCleaning(t *testing.T) {
+func TestCleaning(t *testing.T) {
 	tmpDir := os.TempDir()
 	sourcePath := fmt.Sprintf("%s/%s", tmpDir, source)
-	file := "Splinter Cell Blacklist Shower.mp4"
+	file := "Splinter Cell Blacklist Shower.exe"
 	os.MkdirAll(sourcePath, 0777)
 	_, err := os.Create(filepath.Join(sourcePath, file))
 	if err != nil {
 		t.Fatalf("Unable to create file : %s", file)
 	}
-	Clean(sourcePath)
+	CleanSubDir(sourcePath)
 	ok, err := isDirEmpty(sourcePath)
 	if err != nil {
 		t.Fatalf("Unable to determine if dir is empty : %s", err)
 	}
-	if !ok {
-		t.Errorf("After cleaning dir should be empty : %s", sourcePath)
+	if ok {
+		t.Errorf("After cleaning dir should not be empty : %s", sourcePath)
 	}
 }

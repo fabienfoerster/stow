@@ -11,7 +11,7 @@ func main() {
 
 	flag.Parse()
 	Sort(*srcPtr, *dstPtr)
-	err := Clean(*srcPtr)
+	err := CleanSubDir(*srcPtr)
 	if err != nil {
 		log.Printf("Unable to clean the dir %s : %s", *srcPtr, err)
 	}
