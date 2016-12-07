@@ -1,5 +1,6 @@
 # stow 
 [![Build Status](https://travis-ci.org/fabienfoerster/stow.svg?branch=master)](https://travis-ci.org/fabienfoerster/stow)
+[ ![Codeship Status for fabienfoerster/stow](https://app.codeship.com/projects/3df8ac40-9ee5-0134-1381-7e4e3750070c/status?branch=master)](https://app.codeship.com/projects/189155)
 
 Stow is a simple app that allow someone to sort his series. To use it you simply have to pass a source folder and a destination folder. The files in the source folder will be match against some regex and move to the destination following the principle :
 ````
